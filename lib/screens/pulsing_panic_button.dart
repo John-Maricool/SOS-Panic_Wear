@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../controllers/UtilsController.dart';
@@ -15,6 +18,7 @@ class _PulsingPanicButtonState extends State<PulsingPanicButton>
   late AnimationController _controller;
   late Animation<double> _animation;
   final UtilsController controller = Get.find();
+  Timer? _longPressTimer;
 
   @override
   void initState() {
@@ -26,7 +30,6 @@ class _PulsingPanicButtonState extends State<PulsingPanicButton>
       duration: Duration(milliseconds: 1000), // Duration of one pulse cycle
     );
 
-    // Define the animation (scaling effect)
     _animation = Tween<double>(begin: 0.9, end: 1.1).animate(
       CurvedAnimation(
         parent: _controller,
@@ -34,7 +37,6 @@ class _PulsingPanicButtonState extends State<PulsingPanicButton>
       ),
     );
 
-    // Listen to changes in controller.panicOn
     controller.panicOn.listen((isPanicOn) {
       if (isPanicOn) {
         _controller.repeat(reverse: true); // Start pulsing
@@ -45,9 +47,30 @@ class _PulsingPanicButtonState extends State<PulsingPanicButton>
     });
   }
 
+  void _startLongPressTimer() {
+    HapticFeedback.mediumImpact();
+
+    _longPressTimer = Timer(Duration(seconds: 3), () {
+      HapticFeedback.heavyImpact();
+
+      if (controller.panicOn.isTrue) {
+        controller.stopSendingPanic();
+      } else {
+        controller.startSendingPanic();
+        // Get.toNamed(AppRoutes.confirmLocation);
+      }
+    });
+  }
+
+  void _cancelLongPressTimer() {
+    _longPressTimer?.cancel();
+  }
+
   @override
   void dispose() {
     _controller.dispose(); // Dispose the controller when the widget is removed
+    _longPressTimer?.cancel();
+
     super.dispose();
   }
 
@@ -66,14 +89,10 @@ class _PulsingPanicButtonState extends State<PulsingPanicButton>
           builder: (context, child) {
             return Transform.scale(
               scale: controller.panicOn.value ? _animation.value : 1.0,
-              child: InkWell(
-                onLongPress: () {
-                  if (controller.panicOn.isTrue) {
-                    controller.stopSendingPanic();
-                  } else {
-                    controller.startSendingPanic();
-                  }
-                },
+              child: GestureDetector(
+                onLongPressStart: (_) =>
+                    _startLongPressTimer(), // Start the timer
+                onLongPressEnd: (_) => _cancelLongPressTimer(), //
                 child: Container(
                   height: 120,
                   width: 120,
