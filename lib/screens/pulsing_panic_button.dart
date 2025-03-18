@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:sos_wear_app/app_text_theme.dart';
+import 'package:sos_wear_app/colors.dart';
 
 import '../controllers/UtilsController.dart';
 
@@ -77,8 +79,12 @@ class _PulsingPanicButtonState extends State<PulsingPanicButton>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.black,
       appBar: AppBar(
-        title: Text('Panic Button'),
+        title: Text(
+          'SRU',
+          style: AppTextTheme.h14.copyWith(color: AppColor.white),
+        ),
         centerTitle: true,
         leading: null,
       ),
