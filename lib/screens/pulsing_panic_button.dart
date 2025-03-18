@@ -54,13 +54,7 @@ class _PulsingPanicButtonState extends State<PulsingPanicButton>
 
     _longPressTimer = Timer(Duration(seconds: 3), () {
       HapticFeedback.heavyImpact();
-
-      if (controller.panicOn.isTrue) {
-        controller.stopSendingPanic();
-      } else {
-        controller.startSendingPanic();
-        // Get.toNamed(AppRoutes.confirmLocation);
-      }
+      controller.handlePanic();
     });
   }
 

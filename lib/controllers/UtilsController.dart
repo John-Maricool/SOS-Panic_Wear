@@ -13,7 +13,7 @@ class UtilsController extends GetxController {
   RxDouble lng = 0.0.obs;
   RxString address = "".obs;
   RxBool panicOn = false.obs;
-  Timer? _timer = null;
+  StreamSubscription<Position>? _positionStream;
 
   @override
   void onInit() async {
@@ -22,26 +22,32 @@ class UtilsController extends GetxController {
   }
 
   handlePanic() {
-    panicOn.isTrue ? startSendingPanic() : startSendingPanic();
+    panicOn.isTrue ? stopSendingPanic() : startSendingPanic();
   }
 
   startSendingPanic() async {
-    await ReportApi().sendPanic(lat.value, lng.value).then((v) {
+    // Start listening for location changes
+    ReportApi().sendPanic(lat.value, lng.value).then((v) {
       if (v != null) {
         panicOn.value = true;
         RandomFunction.toast(
             ToastType.success, "Panic Has Started Successfully");
-        _timer = Timer.periodic(Duration(seconds: 2), (v) async {
-          await ReportApi().sendPanic(lat.value, lng.value);
+        _positionStream =
+            Geolocator.getPositionStream().listen((Position position) async {
+          lat.value = position.latitude;
+          lng.value = position.longitude;
+
+          await ReportApi().updatePanic(lat.value, lng.value, v["alert"]["id"]);
         });
       }
     });
   }
 
   stopSendingPanic() async {
+    // Stop listening for location changes
+    _positionStream?.cancel();
+    _positionStream = null;
     panicOn.value = false;
-    _timer!.cancel();
-    _timer = null;
     RandomFunction.toast(ToastType.info, "Panic Has Ended Successfully");
   }
 
