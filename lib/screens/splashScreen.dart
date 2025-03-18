@@ -14,7 +14,7 @@ class Splashscreen extends StatefulWidget {
 class _SplashscreenState extends State<Splashscreen> {
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 4), () {
+    Future.delayed(Duration(seconds: 2), () {
       if (LocalStorage.getToken().isEmpty) {
         Get.to(ExistingUser());
       } else {
