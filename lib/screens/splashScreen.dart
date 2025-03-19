@@ -16,9 +16,9 @@ class _SplashscreenState extends State<Splashscreen> {
     super.initState();
     Future.delayed(Duration(seconds: 2), () {
       if (LocalStorage.getToken().isEmpty) {
-        Get.to(ExistingUser());
+        Get.off(ExistingUser());
       } else {
-        Get.to(PulsingPanicButton());
+        Get.off(PulsingPanicButton());
       }
     });
   }

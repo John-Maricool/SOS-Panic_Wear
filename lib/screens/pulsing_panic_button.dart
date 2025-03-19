@@ -64,7 +64,7 @@ class _PulsingPanicButtonState extends State<PulsingPanicButton>
 
   @override
   void dispose() {
-    _controller.dispose(); // Dispose the controller when the widget is removed
+    _controller.dispose();
     _longPressTimer?.cancel();
 
     super.dispose();
@@ -75,6 +75,7 @@ class _PulsingPanicButtonState extends State<PulsingPanicButton>
     return Scaffold(
       backgroundColor: AppColor.black,
       appBar: AppBar(
+        backgroundColor: AppColor.black,
         title: Text(
           'SRU',
           style: AppTextTheme.h14.copyWith(color: AppColor.white),
