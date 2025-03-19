@@ -70,11 +70,11 @@ class _SigninOTPScreenState extends State<LoginOtp> {
               Text.rich(
                 TextSpan(
                   text:
-                      "Enter the 4-digit code that was sent to your phone number ",
+                      "Enter the 5-digit code that was sent to your phone number ",
                   style: AppTextTheme.h14,
                   children: [
                     TextSpan(
-                        text: "$phone", // The phone number
+                        text: "$phone",
                         style: AppTextTheme.h14.copyWith(
                             color: AppColor.green,
                             fontWeight: FontWeight.bold)),
@@ -125,11 +125,6 @@ class _SigninOTPScreenState extends State<LoginOtp> {
                         RandomFunction.toast(
                             ToastType.info, "Please input a phone number");
                         return;
-                      }
-                      if (count == 0) {
-                        RandomFunction.toast(ToastType.info,
-                            "Click on Resend code for new  OTP");
-                        return;
                       } else {
                         controller
                             .login(phone, otpController.text.trim())
@@ -147,6 +142,9 @@ class _SigninOTPScreenState extends State<LoginOtp> {
                       // Get.off(() => const HomeBottomNav());
                     },
                   )),
+              const SizedBox(
+                height: 30,
+              ),
             ],
           ),
         ),

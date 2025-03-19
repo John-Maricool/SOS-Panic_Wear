@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 import '../local_storage.dart';
+import '../random_functions.dart';
 import '../request.dart';
 
 class LoginApi {
@@ -17,6 +18,7 @@ class LoginApi {
       }
       return data;
     } catch (e) {
+      RandomFunction.toast(ToastType.error, e.toString());
       Logger().e(e.toString());
     }
     return null;

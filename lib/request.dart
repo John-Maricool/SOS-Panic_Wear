@@ -43,7 +43,9 @@ Future<Map<String, dynamic>?> postRequest(
             (data["status"] as String).toLowerCase() == "success" ||
         status == true) {
       return data;
-    } else {}
+    } else {
+      throw Failure(data["message"] ?? "");
+    }
   } on SocketException catch (_) {
     throw Failure("No internet connection");
   } on HttpException catch (_) {
@@ -52,7 +54,7 @@ Future<Map<String, dynamic>?> postRequest(
     throw Failure("Poor internet connection");
   } catch (e) {
     print(e.toString());
-    throw Failure("Something went wrong. Try again");
+    throw Failure(e.toString());
   }
   return null;
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:sos_wear_app/screens/login_Otp.dart';
@@ -33,10 +34,13 @@ class ExistingUser extends StatelessWidget {
             right: screenWidth * 0.05,
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               IntlPhoneField(
                 cursorColor: AppColor.green,
                 disableLengthCheck: true,
+                showCountryFlag: false,
                 initialCountryCode: 'NG',
                 controller: phonecontroller,
                 inputFormatters: [
@@ -45,8 +49,8 @@ class ExistingUser extends StatelessWidget {
                       10), // Limit to 10 characters
                 ],
                 flagsButtonMargin: EdgeInsets.symmetric(
-                  horizontal: screenWidth * 0.02, // Adjust margin dynamically
-                  vertical: screenHeight * 0.01,
+                  horizontal: screenWidth * 0.1, // Adjust margin dynamically
+                  vertical: screenHeight * 0.1,
                 ),
                 decoration: InputDecoration(
                   filled: true,
@@ -76,11 +80,12 @@ class ExistingUser extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
-                  height: screenHeight * 0.03), // Adjust spacing dynamically
+              SizedBox(height: 12.h), // Adjust spacing dynamically
               Obx(
                 () => NavContainerButton(
                   text: 'Signin',
+                  width: 140.w,
+                  height: 55.h,
                   isEnabled: true,
                   appState: controller.appState.value,
                   onTap: () {
