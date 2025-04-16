@@ -21,6 +21,19 @@ class ReportApi {
     return null;
   }
 
+  Future<Map<String, dynamic>?> sendWearAlert(
+      double latitude, double longitude) async {
+    try {
+      var data = await postRequest(client, "panic-alerts",
+          {"latitude": latitude, "longitude": longitude}, true);
+      if (data != null) {}
+      return data;
+    } catch (e) {
+      RandomFunction.toast(ToastType.error, e.toString());
+    }
+    return null;
+  }
+
   Future<Map<String, dynamic>?> updatePanic(
       double latitude, double longitude, int id) async {
     try {

@@ -27,18 +27,33 @@ class UtilsController extends GetxController {
 
   startSendingPanic() async {
     // Start listening for location changes
-    ReportApi().sendPanic(lat.value, lng.value).then((v) {
+    // ReportApi().sendPanic(lat.value, lng.value).then((v) {
+    //   if (v != null) {
+    //     panicOn.value = true;
+    //     RandomFunction.toast(
+    //         ToastType.success, "Panic Has Started Successfully");
+    //     _positionStream =
+    //         Geolocator.getPositionStream().listen((Position position) async {
+    //       lat.value = position.latitude;
+    //       lng.value = position.longitude;
+
+    //       await ReportApi().updatePanic(lat.value, lng.value, v["alert"]["id"]);
+    //     });
+    //   }
+    // });
+
+    ReportApi().sendWearAlert(lat.value, lng.value).then((v) {
       if (v != null) {
         panicOn.value = true;
         RandomFunction.toast(
             ToastType.success, "Panic Has Started Successfully");
-        _positionStream =
-            Geolocator.getPositionStream().listen((Position position) async {
-          lat.value = position.latitude;
-          lng.value = position.longitude;
+        // _positionStream =
+        //     Geolocator.getPositionStream().listen((Position position) async {
+        //   lat.value = position.latitude;
+        //   lng.value = position.longitude;
 
-          await ReportApi().updatePanic(lat.value, lng.value, v["alert"]["id"]);
-        });
+        //   // await ReportApi().updatePanic(lat.value, lng.value, v["alert"]["id"]);
+        // });
       }
     });
   }
