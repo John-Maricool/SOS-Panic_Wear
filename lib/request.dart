@@ -17,7 +17,7 @@ Future<Map<String, dynamic>?> postRequest(
   bool parseToken,
 ) async {
   var token = LocalStorage.getToken();
-
+  Logger().e(body);
   try {
     final response = await client
         .post(

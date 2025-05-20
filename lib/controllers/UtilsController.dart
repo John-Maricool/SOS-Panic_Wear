@@ -100,6 +100,7 @@
 // }
 import 'dart:async';
 
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:logger/logger.dart';
@@ -114,64 +115,87 @@ class UtilsController extends GetxController {
   RxDouble lng = 0.0.obs;
   RxString address = "".obs;
   RxBool panicOn = false.obs;
-  l.Location location = l.Location();
+  StreamSubscription? _eventSubscription;
+
+  MethodChannel platform = MethodChannel('location_service');
+  EventChannel eventChannel = EventChannel('location_updates');
 
   @override
   void onInit() async {
     super.onInit();
-    // requestPermission();
+    getFirstLocation();
   }
 
   handlePanic() {
     panicOn.isTrue ? stopSendingPanic() : startSendingPanic();
   }
 
+  Future<void> startLocationUpdates(int id) async {
+    try {
+      await platform.invokeMethod('requestPermission');
+      final bool result = await platform.invokeMethod('checkPermission');
+      if (result) {
+        _eventSubscription =
+            eventChannel.receiveBroadcastStream().listen((event) async {
+          if (event != null) {
+            List<String> parts = (event as String).split(" ");
+
+            double latitude = double.parse(parts[0]);
+            double longitude = double.parse(parts[1]);
+            lat.value = latitude;
+            lng.value = longitude;
+            ReportApi().updatePanic(lat.value, lng.value, id);
+          }
+        });
+      }
+    } on PlatformException catch (e) {
+      print("Failed to start location updates: '${e.message}'.");
+    }
+  }
+
+  Future<void> getFirstLocation() async {
+    try {
+      await platform.invokeMethod('requestPermission');
+      final bool result = await platform.invokeMethod('checkPermission');
+      if (result) {
+        var first_event = await eventChannel.receiveBroadcastStream().first;
+        if (first_event != null) {
+          List<String> parts = (first_event as String).split(" ");
+
+          double latitude = double.parse(parts[0]);
+          double longitude = double.parse(parts[1]);
+          lat.value = latitude;
+          lng.value = longitude;
+
+          Logger().d("Latitude: $latitude");
+          Logger().d("Longitude: $longitude");
+        }
+      }
+    } on PlatformException catch (e) {
+      Logger().d("Failed to start location updates: '${e.message}'.");
+    }
+  }
+
   startSendingPanic() async {
-    ReportApi().sendPanic().then((v) {
+    ReportApi().sendPanic(lat.value, lng.value).then((v) {
       if (v != null) {
         panicOn.value = true;
         RandomFunction.toast(
             ToastType.success, "Panic Has Started Successfully");
+        startLocationUpdates(v["alert"]["id"]);
       }
     });
   }
 
   stopSendingPanic() async {
-    // Stop listening for location changes
     ReportApi().stopPanic().then((v) {
       if (v != null) {
         panicOn.value = false;
+        _eventSubscription?.cancel();
+        _eventSubscription = null;
         RandomFunction.toast(ToastType.info, "Panic Has Ended Successfully");
       }
     });
-  }
-
-  getDeviceLocation() async {
-    try {
-      bool serviceEnabled = await location.serviceEnabled();
-      if (!serviceEnabled) {
-        serviceEnabled = await location.requestService();
-        if (!serviceEnabled) {
-          throw "Location services are disabled.";
-        }
-      }
-
-      // Get the current location
-      l.LocationData currentLocation = await location.getLocation();
-      var placemarks = await placemarkFromCoordinates(
-        currentLocation.latitude ?? 0.0,
-        currentLocation.longitude ?? 0.0,
-      );
-
-      // Update address and coordinates
-      address.value =
-          "${placemarks.first.subLocality} ${placemarks.first.administrativeArea ?? ""},  ${placemarks.first.country ?? ""}";
-      lat.value = currentLocation.latitude ?? 0.0;
-      lng.value = currentLocation.longitude ?? 0.0;
-    } catch (e) {
-      print(e.toString());
-      return null;
-    }
   }
 
   Future<bool> requestPermission() async {
@@ -179,14 +203,14 @@ class UtilsController extends GetxController {
 
     while (true) {
       if (await permission.isGranted) {
-        getDeviceLocation();
+        getFirstLocation();
         return true;
       } else if (await permission.isPermanentlyDenied) {
         return false;
       } else {
         final result = await permission.request();
         if (result.isGranted) {
-          getDeviceLocation();
+          getFirstLocation();
           return true;
         } else if (result.isPermanentlyDenied) {
           return false;
