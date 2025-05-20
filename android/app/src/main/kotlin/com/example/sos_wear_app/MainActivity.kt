@@ -106,8 +106,8 @@ class MainActivity : FlutterActivity() {
 
     private fun getLocationRequest(): LocationRequest {
         return LocationRequest.create().apply {
-            interval = TimeUnit.SECONDS.toMillis(5000)
-            fastestInterval = TimeUnit.SECONDS.toMillis(5000)
+            interval = 5000
+            fastestInterval = 5000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
     }

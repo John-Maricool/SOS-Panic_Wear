@@ -106,6 +106,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:logger/logger.dart';
 import 'package:location/location.dart'
     as l; // Replace geolocator with location
+import 'package:sos_wear_app/local_storage.dart';
 import '../apis/report_api.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../random_functions.dart';
@@ -166,7 +167,8 @@ class UtilsController extends GetxController {
           double longitude = double.parse(parts[1]);
           lat.value = latitude;
           lng.value = longitude;
-
+          LocalStorage.saveLat(lat.value);
+          LocalStorage.saveLnt(lng.value);
           Logger().d("Latitude: $latitude");
           Logger().d("Longitude: $longitude");
         }
@@ -177,7 +179,12 @@ class UtilsController extends GetxController {
   }
 
   startSendingPanic() async {
-    ReportApi().sendPanic(lat.value, lng.value).then((v) {
+    ReportApi()
+        .sendPanic(
+      lat.value == 0 ? LocalStorage.getLat().toDouble() : lat.value.toDouble(),
+      lng.value == 0 ? LocalStorage.getLnt().toDouble() : lng.value.toDouble(),
+    )
+        .then((v) {
       if (v != null) {
         panicOn.value = true;
         RandomFunction.toast(
