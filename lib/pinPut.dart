@@ -13,8 +13,8 @@ class PinField extends StatelessWidget {
       length: 5,
       controller: otpController,
       focusedPinTheme: PinTheme(
-          height: 40,
-          width: 40,
+          height: 20,
+          width: 20,
           decoration: BoxDecoration(
               border: Border.all(color: AppColor.green),
               borderRadius: BorderRadius.circular(10))),

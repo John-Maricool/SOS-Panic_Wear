@@ -54,96 +54,101 @@ class _SigninOTPScreenState extends State<LoginOtp> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Verify OTP',
-              style: AppTextTheme.h18
-                  .copyWith(fontWeight: FontWeight.w900, fontSize: 20),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text.rich(
-              TextSpan(
-                text:
-                    "Enter the 5-digit code that was sent to your phone number ",
-                style: AppTextTheme.h14,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'Verify OTP',
+                style: AppTextTheme.h14
+                    .copyWith(fontWeight: FontWeight.w900, fontSize: 14),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text.rich(
+                TextSpan(
+                  text:
+                      "Enter the 5-digit code that was sent to your phone number ",
+                  style: AppTextTheme.h11,
+                  children: [
+                    TextSpan(
+                        text: "$phone",
+                        style: AppTextTheme.h11.copyWith(
+                            color: AppColor.green,
+                            fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                textAlign: TextAlign.start,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Center(
+                  child: PinField(
+                otpController: otpController,
+              )),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextSpan(
-                      text: "$phone",
-                      style: AppTextTheme.h14.copyWith(
-                          color: AppColor.green, fontWeight: FontWeight.bold)),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        count = 60;
+                        countDown();
+                      });
+                    },
+                    child: Text(
+                      'Resend code in ',
+                      style: AppTextTheme.h11.copyWith(color: AppColor.green),
+                    ),
+                  ),
+                  Text(
+                    '${count}s',
+                    style: AppTextTheme.h11,
+                  ),
                 ],
               ),
-              textAlign: TextAlign.start,
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Center(
-                child: PinField(
-              otpController: otpController,
-            )),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      count = 60;
-                      countDown();
-                    });
-                  },
-                  child: Text(
-                    'Resend code in ',
-                    style: AppTextTheme.h14.copyWith(color: AppColor.green),
-                  ),
-                ),
-                Text(
-                  '${count}s',
-                  style: AppTextTheme.h14,
-                ),
-              ],
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height / 4,
-            ),
-            Obx(() => NavContainerButton(
-                  text: 'Signin',
-                  appState: controller.appState.value,
-                  isEnabled: true,
-                  onTap: () {
-                    if (otpController.text.isEmpty) {
-                      RandomFunction.toast(
-                          ToastType.info, "Please input a phone number");
-                      return;
-                    } else {
-                      controller
-                          .login(phone, otpController.text.trim())
-                          .then((res) {
-                        if (res) {
-                          Future.delayed(Duration(milliseconds: 500), () {
-                            RandomFunction.toast(
-                                ToastType.success, "Login Successful!");
-                          });
+              SizedBox(
+                height: 10,
+              ),
+              Obx(() => NavContainerButton(
+                    text: 'Signin',
+                    appState: controller.appState.value,
+                    isEnabled: true,
+                    width: 100,
+                    height: 35,
+                    onTap: () {
+                      if (otpController.text.isEmpty) {
+                        RandomFunction.toast(
+                            ToastType.info, "Please input a phone number");
+                        return;
+                      } else {
+                        controller
+                            .login(phone, otpController.text.trim())
+                            .then((res) {
+                          if (res) {
+                            Future.delayed(Duration(milliseconds: 500), () {
+                              RandomFunction.toast(
+                                  ToastType.success, "Login Successful!");
+                            });
 
-                          Get.offAll(PulsingPanicButton());
-                        }
-                      });
-                    }
-                    // Get.off(() => const HomeBottomNav());
-                  },
-                )),
-            const SizedBox(
-              height: 30,
-            ),
-          ],
+                            Get.offAll(PulsingPanicButton());
+                          }
+                        });
+                      }
+                      // Get.off(() => const HomeBottomNav());
+                    },
+                  )),
+              const SizedBox(
+                height: 10,
+              ),
+            ],
+          ),
         ),
       ),
     );
