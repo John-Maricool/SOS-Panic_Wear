@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:get/route_manager.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 
 import 'failure.dart';
 import 'local_storage.dart';
@@ -18,7 +19,6 @@ Future<Map<String, dynamic>?> postRequest(
   var token = LocalStorage.getToken();
 
   try {
-    Future.delayed(Duration(seconds: 10));
     final response = await client
         .post(
           Uri.parse("$baseurl$endpoint"),
@@ -37,6 +37,7 @@ Future<Map<String, dynamic>?> postRequest(
         .timeout(const Duration(seconds: 60));
 
     final data = jsonDecode(response.body);
+    Logger().e(data);
     bool status = data["success"] ?? false;
 
     if (data["status"] != null &&

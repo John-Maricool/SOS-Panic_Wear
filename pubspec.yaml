@@ -35,18 +35,21 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   get: ^4.6.6
-  geolocator: ^10.0.0
   bot_toast: ^4.0.3
+  geolocator_android: ^5.0.0
   pinput: ^5.0.1
   flutter_launcher_icons: ^0.14.3
   logger: ^1.0.0
   intl_phone_field: ^3.2.0
   geocoding: ^3.0.0
   path_provider: ^2.1.5
+  geolocator_platform_interface: ^4.2.6
   flutter_screenutil: ^5.7.0
+  #wear: ^1.1.0
   permission_handler: ^11.3.1
   http: ^1.2.1
   hive: ^2.2.3
+  location: ^8.0.0
 
 
 

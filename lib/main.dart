@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
           defaultTransition: Transition.fadeIn,
           initialBinding: InitialBinding(),
           home: Splashscreen()),
-      designSize: const Size(240, 240), // Adjusted for a 240x240 smartwatch
+      designSize: const Size(240, 240),
     );
   }
 }
