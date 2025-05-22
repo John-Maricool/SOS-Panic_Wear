@@ -13,6 +13,7 @@ class Splashscreen extends StatefulWidget {
 }
 
 class _SplashscreenState extends State<Splashscreen> {
+  @override
   void initState() {
     super.initState();
     Get.find<UtilsController>().requestPermission().then((v) {

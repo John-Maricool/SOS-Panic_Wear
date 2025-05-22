@@ -267,10 +267,11 @@ class UtilsController extends GetxController {
   }
 
   Future<void> getFirstLocation() async {
-    await getCurrentLocation();
+    getCurrentLocation();
   }
 
   void startSendingPanic() async {
+    getCurrentLocation();
     ReportApi().sendPanic(lat.value, lng.value).then((v) {
       if (v != null) {
         _panicId = v["alert"]["id"];
@@ -327,14 +328,14 @@ class UtilsController extends GetxController {
 
     while (true) {
       if (await permission.isGranted) {
-        getFirstLocation();
+        // getFirstLocation();
         return true;
       } else if (await permission.isPermanentlyDenied) {
         return false;
       } else {
         final result = await permission.request();
         if (result.isGranted) {
-          getFirstLocation();
+          // getFirstLocation();
           return true;
         } else if (result.isPermanentlyDenied) {
           return false;
