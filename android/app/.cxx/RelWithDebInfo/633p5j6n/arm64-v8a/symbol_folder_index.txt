@@ -1,0 +1,1 @@
+/Users/macbook/FlutterProjects/sos_wear_app/build/app/intermediates/cxx/RelWithDebInfo/633p5j6n/obj/arm64-v8a
