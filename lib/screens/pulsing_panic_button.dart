@@ -52,7 +52,7 @@ class _PulsingPanicButtonState extends State<PulsingPanicButton>
   void _startLongPressTimer() {
     HapticFeedback.mediumImpact();
 
-    _longPressTimer = Timer(Duration(seconds: 3), () {
+    _longPressTimer = Timer(Duration(seconds: 2), () {
       HapticFeedback.lightImpact();
       controller.handlePanic();
     });
